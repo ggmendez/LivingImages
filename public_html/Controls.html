@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<!-- saved from url=(0043)http://fabricjs.com/controls-customization/ -->
+<html lang="en" ng-app="kitchensink"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8"><style type="text/css">@charset "UTF-8";[ng\:cloak],[ng-cloak],[data-ng-cloak],[x-ng-cloak],.ng-cloak,.x-ng-cloak,.ng-hide{display:none !important;}ng\:form{display:block;}.ng-animate-start{border-spacing:1px 1px;-ms-zoom:1.0001;}.ng-animate-active{border-spacing:0px 0px;-ms-zoom:1;}</style>
+    <meta charset="utf-8">
+
+    <title>Controls customization | Fabric.js Demos</title>
+
+    <link rel="stylesheet" href="http://fabricjs.com/css/master.css">
+    <link rel="stylesheet" href="http://fabricjs.com/css/prism.css">
+    <style>
+      pre { margin-left: 15px !important }
+    </style>
+
+    <!--[if lt IE 9]>
+      <script src="../lib/excanvas.js"></script>
+    <![endif]-->
+
+    <script id="twitter-wjs" src="./Controls_files/widgets.js"></script><script async="" src="./Controls_files/load.js"></script><script type="text/javascript" async="" src="./Controls_files/ga.js"></script><script src="./Controls_files/prism.js"></script>
+    <script src="./Controls_files/fabric.js"></script>
+    <script src="./Controls_files/master.js"></script>
+
+    <script src="./Controls_files/angular.min.js"></script>
+  </head>
+  <body data-twttr-rendered="true">
+    <ul id="header">
+  <li><a href="http://fabricjs.com/">Home</a></li>
+  <li><a href="http://fabricjs.com/demos">Demos</a></li>
+  <li><a href="http://fabricjs.com/articles">Tutorial</a></li>
+  <li><a href="http://fabricjs.com/docs">Docs</a></li>
+  <li><a href="http://fabricjs.com/build">Custom Build</a></li>
+  <li><a href="http://fabricjs.com/help">Support</a></li>
+  <li><a href="http://fabricjs.com/test">Tests/Benchmarks</a></li>
+  <li><a href="http://fabricjs.com/team">Team</a></li>
+
+  <li class="secondary">
+    <a href="https://codeclimate.com/repos/526a0ed089af7e6cf2001389/feed">
+      <img src="./Controls_files/gpa.png">
+    </a>
+    <a href="http://travis-ci.org/#!/kangax/fabric.js">
+      <img src="./Controls_files/fabric.js.png">
+    </a>
+  </li>
+  <li class="gittip secondary">
+    <iframe style="border: 0; margin: 0; padding: 0;" src="./Controls_files/widget.html" width="48pt" height="22pt"></iframe>
+  </li>
+  <li class="flattr secondary">
+    <iframe src="./Controls_files/saved_resource.html" class="FlattrButton" width="110" height="20" frameborder="0" scrolling="no" title="Flattr" border="0" marginheight="0" marginwidth="0" allowtransparency="true"></iframe>
+    <noscript>
+      &lt;a href="http://flattr.com/thing/391332/Fabric-js" target="_blank"&gt;
+        &lt;img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /&gt;
+      &lt;/a&gt;
+    </noscript>
+  </li>
+  <li class="github secondary">
+    <iframe src="./Controls_files/github-btn.html" allowtransparency="true" frameborder="0" scrolling="0" width="95px" height="20px"></iframe>
+  </li>
+  <li class="twitter secondary">
+    <iframe id="twitter-widget-0" scrolling="no" frameborder="0" allowtransparency="true" src="./Controls_files/follow_button.1400006231.html" class="twitter-follow-button twitter-follow-button" title="Twitter Follow Button" data-twttr-rendered="true" style="width: 216px; height: 20px;"></iframe>
+  </li>
+</ul>
+
+<script>
+(function() {
+
+  if (document.location.hostname === 'localhost') {
+    var links = document.getElementById('header').getElementsByTagName('a');
+    for (var i = 0, len = links.length; i < len; i++) {
+      // very retarted fix but fuck it
+      links[i].href = links[i].href.replace('fabricjs.com', 'localhost:4000');
+    }
+  }
+  else {
+    var s = document.createElement('script'), t = document.getElementsByTagName('script')[0];
+    s.async = true;
+    s.src = 'http://api.flattr.com/js/0.6/load.js?mode=auto';
+    t.parentNode.insertBefore(s, t);
+
+    !function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0];if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src="//platform.twitter.com/widgets.js";fjs.parentNode.insertBefore(js,fjs);}}(document,"script","twitter-wjs");
+  }
+})();
+</script>
+
+
+    <div id="bd-wrapper" ng-controller="CanvasControls">
+      <h2><span>Fabric.js demos</span> · Controls customization</h2>
+
+      <div class="canvas-container" style="width: 600px; height: 500px; position: relative; -webkit-user-select: none;"><canvas id="c" width="600" height="500" class="lower-canvas" style="position: absolute; width: 600px; height: 500px; left: 0px; top: 0px; -webkit-user-select: none;"></canvas><canvas class="upper-canvas " width="600" height="500" style="position: absolute; width: 600px; height: 500px; left: 0px; top: 0px; -webkit-user-select: none; cursor: default;"></canvas></div>
+
+<div style="display: inline-block; background: #f5f2f0; padding: 0 10px; margin-top: .5em; margin-left: 10px; margin-right: -5px">
+  <p>
+    <label>
+      <input type="checkbox" id="hasControls" checked="">
+      <code>hasControls</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="hasBorders" checked="">
+      <code>hasBorders</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="hasRotatingPoint" checked="">
+      <code>hasRotatingPoint</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="visible" checked="">
+      <code>visible</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="selectable" checked="">
+      <code>selectable</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="evented" checked="">
+      <code>evented</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="transparentCorners">
+      <code>transparentCorners</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="centeredScaling">
+      <code>centeredScaling</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <input type="checkbox" id="centeredRotation">
+      <code>centeredRotation</code>
+    </label>
+  </p>
+  <p>
+    <label>
+      <code>padding</code>
+      <input type="range" id="padding" value="0" min="0" max="50" style="display: block">
+    </label>
+  </p>
+  <p>
+    <label>
+      <code>cornerSize</code>
+      <input type="range" id="cornerSize" value="12" min="1" max="50" style="display: block">
+    </label>
+  </p>
+  <p>
+    <label>
+      <code>rotatingPointOffset</code>
+      <input type="range" id="rotatingPointOffset" value="40" min="5" max="150" style="display: block">
+    </label>
+  </p>
+  <p>
+    <label>
+      <code>borderColor</code>
+      <input type="color" id="borderColor" style="display: block">
+    </label>
+  </p>
+  <p>
+    <label>
+      <code>cornerColor</code>
+      <input type="color" id="cornerColor" style="display: block">
+    </label>
+  </p>
+</div>
+
+<script id="main">(function() {
+  var canvas = this.__canvas = new fabric.Canvas('c');
+
+  var rect = new fabric.Rect({
+    left: 150,
+    top: 200,
+    originX: 'left',
+    originY: 'top',
+    width: 150,
+    height: 120,
+    angle: -10,
+    fill: 'rgba(255,0,0,0.5)',
+    transparentCorners: false
+  });
+
+  canvas.add(rect).setActiveObject(rect);
+
+  function observeBoolean(property) {
+    document.getElementById(property).onclick = function() {
+      canvas.item(0)[property] = this.checked;
+      canvas.renderAll();
+    };
+  }
+
+  function observeNumeric(property) {
+    document.getElementById(property).onchange = function() {
+      canvas.item(0)[property] = this.value;
+      canvas.renderAll();
+    };
+  }
+
+  observeBoolean('hasControls');
+  observeBoolean('hasBorders');
+  observeBoolean('hasRotatingPoint');
+  observeBoolean('visible');
+  observeBoolean('selectable');
+  observeBoolean('evented');
+  observeBoolean('transparentCorners');
+  observeBoolean('centeredScaling');
+  observeBoolean('centeredRotation');
+
+  observeNumeric('padding');
+  observeNumeric('cornerSize');
+  observeNumeric('rotatingPointOffset');
+  observeNumeric('borderColor');
+  observeNumeric('cornerColor');
+})();
+</script>
+
+    <pre class=" language-javascript"><code class=" language-javascript"><span class="token punctuation">(</span><span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+  <span class="token keyword">var</span> canvas <span class="token operator">=</span> this<span class="token punctuation">.</span>__canvas <span class="token operator">=</span> <span class="token keyword">new</span> fabric<span class="token punctuation">.</span>Canvas<span class="token punctuation">(</span><span class="token string">'c'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">var</span> rect <span class="token operator">=</span> <span class="token keyword">new</span> fabric<span class="token punctuation">.</span>Rect<span class="token punctuation">(</span><span class="token punctuation">{</span>
+    left<span class="token punctuation">:</span> <span class="token number">150</span><span class="token punctuation">,</span>
+    top<span class="token punctuation">:</span> <span class="token number">200</span><span class="token punctuation">,</span>
+    originX<span class="token punctuation">:</span> <span class="token string">'left'</span><span class="token punctuation">,</span>
+    originY<span class="token punctuation">:</span> <span class="token string">'top'</span><span class="token punctuation">,</span>
+    width<span class="token punctuation">:</span> <span class="token number">150</span><span class="token punctuation">,</span>
+    height<span class="token punctuation">:</span> <span class="token number">120</span><span class="token punctuation">,</span>
+    angle<span class="token punctuation">:</span> <span class="token operator">-</span><span class="token number">10</span><span class="token punctuation">,</span>
+    fill<span class="token punctuation">:</span> <span class="token string">'rgba(255,0,0,0.5)'</span><span class="token punctuation">,</span>
+    transparentCorners<span class="token punctuation">:</span> <span class="token boolean">false</span>
+  <span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  canvas<span class="token number">.add</span><span class="token punctuation">(</span>rect<span class="token punctuation">)</span><span class="token punctuation">.</span>setActiveObject<span class="token punctuation">(</span>rect<span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  <span class="token keyword">function</span> observeBoolean<span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    document<span class="token punctuation">.</span>getElementById<span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">.</span>onclick <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      canvas<span class="token punctuation">.</span>item<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">[</span>property<span class="token punctuation">]</span> <span class="token operator">=</span> this<span class="token punctuation">.</span>checked<span class="token punctuation">;</span>
+      canvas<span class="token punctuation">.</span>renderAll<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  <span class="token keyword">function</span> observeNumeric<span class="token punctuation">(</span>property<span class="token punctuation">)</span> <span class="token punctuation">{</span>
+    document<span class="token punctuation">.</span>getElementById<span class="token punctuation">(</span>property<span class="token punctuation">)</span><span class="token punctuation">.</span>onchange <span class="token operator">=</span> <span class="token keyword">function</span><span class="token punctuation">(</span><span class="token punctuation">)</span> <span class="token punctuation">{</span>
+      canvas<span class="token punctuation">.</span>item<span class="token punctuation">(</span><span class="token number">0</span><span class="token punctuation">)</span><span class="token punctuation">[</span>property<span class="token punctuation">]</span> <span class="token operator">=</span> this<span class="token punctuation">.</span>value<span class="token punctuation">;</span>
+      canvas<span class="token punctuation">.</span>renderAll<span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+    <span class="token punctuation">}</span><span class="token punctuation">;</span>
+  <span class="token punctuation">}</span>
+
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'hasControls'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'hasBorders'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'hasRotatingPoint'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'visible'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'selectable'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'evented'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'transparentCorners'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'centeredScaling'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeBoolean<span class="token punctuation">(</span><span class="token string">'centeredRotation'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+
+  observeNumeric<span class="token punctuation">(</span><span class="token string">'padding'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeNumeric<span class="token punctuation">(</span><span class="token string">'cornerSize'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeNumeric<span class="token punctuation">(</span><span class="token string">'rotatingPointOffset'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeNumeric<span class="token punctuation">(</span><span class="token string">'borderColor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+  observeNumeric<span class="token punctuation">(</span><span class="token string">'cornerColor'</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+<span class="token punctuation">}</span><span class="token punctuation">)</span><span class="token punctuation">(</span><span class="token punctuation">)</span><span class="token punctuation">;</span>
+</code></pre></div>
+
+    <script>
+      (function(){
+        var mainScriptEl = document.getElementById('main');
+        if (!mainScriptEl) return;
+        var preEl = document.createElement('pre');
+        var codeEl = document.createElement('code');
+        codeEl.innerHTML = mainScriptEl.innerHTML;
+        codeEl.className = 'language-javascript';
+        preEl.appendChild(codeEl);
+        document.getElementById('bd-wrapper').appendChild(preEl);
+      })();
+    </script>
+
+    <script>
+(function() {
+  fabric.util.addListener(fabric.window, 'load', function() {
+    var canvas = this.__canvas || this.canvas,
+        canvases = this.__canvases || this.canvases;
+
+    canvas && canvas.calcOffset && canvas.calcOffset();
+
+    if (canvases && canvases.length) {
+      for (var i = 0, len = canvases.length; i < len; i++) {
+        canvases[i].calcOffset();
+      }
+    }
+  });
+})();
+</script>
+
+
+  
+
+</body></html>

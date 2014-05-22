@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html><head>
+        <title>Application</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <meta name="description" content="" />
+
+        <link rel="stylesheet" type="text/css" href="./css/main.css" />
+        <link rel="stylesheet" type="text/css" href="./css/kickstart.css" media="all" />
+        <link rel="stylesheet" type="text/css" href="./style.css" media="all" />
+
+        <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+        <script type="text/javascript" src="./js/kickstart.js"></script>
+
+        <script type="text/javascript" src="./js/pixi.js"></script>
+
+
+    </head>
+
+    <body>
+
+
+
+
+
+        <!-- Menu Horizontal -->
+        <ul class="menu">
+
+
+
+            <li> <a href="javascript:onLoad();"><i class="icon-picture"></i> Import Image</a></li>
+            <li> <input type="file" id="fileInput" onchange="handleFiles(this.files)" style="visibility:hidden;position:absolute;top:-50;left:-50"/></li>
+
+            <li><a href=""><i class="icon-upload-alt"></i> Upload</a></li>
+            <li><a href=""><i class="icon-plus-sign"></i></a></li>
+
+            <li class=""><a href="">Import image</a></li>
+            <li><a href="">Select</a></li>
+            <li><a href=""><span class="icon" data-icon="R"></span>Item 3</a>
+                <ul>
+                    <li><a href=""><span class="icon" data-icon="G"></span>Sub Item</a></li>
+                    <li><a href=""><span class="icon" data-icon="A"></span>Sub Item</a>
+                        <ul>
+                            <li><a href=""><span class="icon" data-icon="Z"></span>Sub Item</a></li>
+                            <li><a href=""><span class="icon" data-icon="k"></span>Sub Item</a></li>
+                            <li><a href=""><span class="icon" data-icon="J"></span>Sub Item</a></li>
+                            <li><a href=""><span class="icon" data-icon="="></span>Sub Item</a></li>
+                        </ul>
+                    </li>
+                    <li class="divider"><a href=""><span class="icon" data-icon="T"></span>li.divider</a></li>
+                </ul>
+            </li>
+            <li><a href="">Item 4</a></li>
+        </ul>
+
+        <div class="grid">
+
+            <!-- ===================================== END HEADER ===================================== -->
+
+            <div class="col_12">
+
+                <div id="theCanvas" class="col_10 canvasStyle"></div>
+
+                <div class="col_2">
+                    <h5>Actions</h5>
+                    <ul class="icons">
+                        <li><i class="icon-copy"></i>Duplicate</li>
+                        <li><i class="icon-repeat"></i>Rotate</li>
+                        <li><i class="icon-resize-full"></i>Resize</li>
+                        <li><i class="icon-group"></i>Group</li>
+                        <li><i class="icon-remove"></i>Remove</li>
+                    </ul>
+
+                    <hr />
+
+                    <h5>Share</h5>
+                    <i class="icon-twitter-sign icon-3x"></i> 
+                    <i class="icon-facebook-sign icon-3x"></i>                    
+                    <i class="icon-google-plus icon-3x"></i>
+
+                    <hr />
+
+                    <span class="icon social x-large darkgray" data-icon="1"></span>
+                    <span class="icon social x-large black" data-icon="w"></span>
+                    <span class="icon x-large pink" data-icon="*"></span>
+                    <span class="icon social x-large green" data-icon="v"></span>
+
+                    <h5>Contact us</h5>
+                    <ul class="icons">
+                        <li><i class="icon-envelope"></i>Development team</li>
+                    </ul>
+                </div>
+
+                <hr />
+
+                <div class="col_3">
+                    <h4>Column 1</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore 
+                        magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis</p>
+                </div>
+
+                <div class="col_3">
+                    <h4>Column 2</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore 
+                        magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis</p>
+                </div>
+
+                <div class="col_3">
+                    <h4>Column 3</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore 
+                        magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis</p>
+                </div>
+
+                <div class="col_3">
+                    <h4>Column 4</h4>
+                    <p>Lorem ipsum dolor sit amet, consectetuer adipiscing elit, sed diam nonummy nibh euismod tincidunt ut laoreet dolore 
+                        magna aliquam erat volutpat. Ut wisi enim ad minim veniam, quis nostrud exerci tation ullamcorper suscipit lobortis</p>
+                </div>
+            </div>
+
+        </div><!-- END GRID -->
+
+        <!-- ===================================== START FOOTER ===================================== -->
+        <div class="clear"></div>
+        <div id="footer">
+            &copy; 2014 The <a href="https://www.st-andrews.ac.uk/">University of St Andrews</a> is a charity registered in Scotland, No SC013532.
+            <br />
+            College Gate, St Andrews, Fife KY16 9AJ, Scotland, United Kingdom. Telephone: +44 (0)1334 476161
+            <br />
+
+        </div>
+
+
+        <script>
+
+            var canvas = document.getElementById('theCanvas');
+            var width = $('#theCanvas').width();
+            var height = $('#theCanvas').height();
+
+            function onLoad() {
+                var fileInput = document.getElementById('fileInput');
+                fileInput.click();
+            }
+
+            function handleFiles(files) {
+                var file = files[0];
+                var reader = new FileReader();
+                reader.onload = onFileReadComplete;
+                //reader.readAsText(file);
+                reader.readAsDataURL(file);
+            }
+
+            function onFileReadComplete(event) {
+
+                var img = new Image();
+                img.onload = function() {
+
+                    var base = new PIXI.BaseTexture(img);
+                    var texture = new PIXI.Texture(base);
+
+                    createSprite(texture, width/2, height/2);
+                };
+                img.src = event.target.result;
+
+            }
+
+
+
+
+
+            // create an new instance of a pixi stage
+            var stage = new PIXI.Stage(0x97C56E, true);
+
+            // create a renderer instance
+            var renderer = PIXI.autoDetectRenderer(width, height, null);
+
+            // add the renderer view element to the DOM
+            canvas.appendChild(renderer.view);
+
+            renderer.view.style.position = "absolute";
+
+
+            requestAnimFrame(animate);
+
+
+
+            function createSprite(texture, x, y) {
+
+                // creating the sprite
+                var sprite = new PIXI.Sprite(texture);
+
+                // enabling interaction. This will allow it to respond to mouse and touch events
+                sprite.interactive = true;
+
+                // this button mode will mean the hand cursor appears when you rollover the bunny with your mouse
+                sprite.buttonMode = true;
+
+                // center the bunnys anchor point
+                sprite.anchor.x = 0.5;
+                sprite.anchor.y = 0.5;
+
+                // make it a bit bigger, so its easier to touch
+                //sprite.scale.x = sprite.scale.y = 3;
+
+                // use the mousedown and touchstart
+                sprite.mousedown = sprite.touchstart = function(data) {
+                    // stop the default event...
+                    data.originalEvent.preventDefault();
+
+                    // store a reference to the data
+                    // The reason for this is because of multitouch
+                    // we want to track the movement of this particular touch
+                    this.data = data;
+                    this.alpha = 0.9;
+                    this.dragging = this.data.getLocalPosition(this.parent);
+                 
+                   
+                };
+
+                // set the events for when the mouse is released or a touch is released
+                sprite.mouseup = sprite.mouseupoutside = sprite.touchend = sprite.touchendoutside = function(data) {
+                    
+                    this.alpha = 1
+                    this.dragging = false;
+                    // set the interaction data to null
+                    this.data = null;
+                    
+          
+                };
+
+                // set the callbacks for when the mouse or a touch moves
+                sprite.mousemove = sprite.touchmove = function(data) {
+                    if (this.dragging) {
+                        var newPosition = this.data.getLocalPosition(this.parent);
+                this.position.x += (newPosition.x - this.dragging.x);
+                this.position.y += (newPosition.y - this.dragging.y);
+                this.dragging = newPosition;
+                    }
+                };
+
+                // move the sprite to its designated position
+                sprite.position.x = x;
+                sprite.position.y = y;
+
+                // add it to the stage
+                stage.addChild(sprite);
+            }
+
+            function animate() {
+
+                requestAnimFrame(animate);
+
+                // render the stage
+                renderer.render(stage);
+            }
+
+        </script>
+
+
+
+
+    </body>
+
+</html>

@@ -279,9 +279,10 @@
                             if (e.target.type == "importedImage") {
                                 var obj = e.target;
                                 var arrayLength = obj.widgets.length;
-                                for (var i = 0; i < arrayLength; i++) {
-                                    obj.widgets[i].setAngle(obj.getAngle()).setCoords();
-                                    var widgetLocation = computeWidgetLocation(obj, obj.widgets[i], obj.widgets[i].height);
+                                for (var i = 0; i < arrayLength; i++) {                                    
+                                    obj.widgets[i].setAngle(obj.getAngle());
+                                    obj.widgets[i].setCoords();
+                                    var widgetLocation = computeLocationOfVerticalWidget(obj, obj.widgets[i], obj.widgets[i].height);
                                     obj.widgets[i].left = widgetLocation[0];
                                     obj.widgets[i].top = widgetLocation[1];
                                     obj.widgets[i].setCoords();
@@ -299,11 +300,21 @@
                                 for (var i = 0; i < arrayLength; i++) {
                                     obj.widgets[i].left = obj.widgets[i].left + (currentX - previousX);
                                     obj.widgets[i].top = obj.widgets[i].top + (currentY - previousY);
+                                    obj.widgets[i].setCoords();
                                     canvas.renderAll();
                                 }
                                 previousX = e.target.left;
                                 previousY = e.target.top;
                             }
+                            // TODO: When a widget is moved and dropped out of its parent,
+                            // this object should be removed from its parent's widgets list
+//                            if (e.target.parentObject) {
+//                                var index = e.target.parentObject.widgets.indexOf(e.target);
+//                                if (index > -1) {
+//                                    e.target.parentObject.widgets.splice(index, 1);
+//                                    e.target.parentObject = null;
+//                                }
+//                            }
                         },
                         'object:scaling': function(e) {
                             if (e.target.type == "importedImage") {
@@ -312,9 +323,11 @@
                                 for (var i = 0; i < arrayLength; i++) {
                                     obj.widgets[i].scaleX = obj.scaleX;
                                     obj.widgets[i].scaleY = obj.scaleY;
-                                    var widgetLocation = computeWidgetLocation(obj, obj.widgets[i], obj.widgets[i].height);
+                                    obj.widgets[i].setCoords();
+                                    var widgetLocation = computeLocationOfVerticalWidget(obj, obj.widgets[i], obj.widgets[i].height);
                                     obj.widgets[i].left = widgetLocation[0];
                                     obj.widgets[i].top = widgetLocation[1];
+                                    obj.widgets[i].setCoords();
                                     canvas.renderAll();
                                 }
                             }
@@ -681,7 +694,17 @@
                     // confirm dialog
                     alertify.confirm("Are you sure you want to remove the selected object?", function(e) {
                         if (e) {
-                            canvas.remove(canvas.getActiveObject());
+                            var obj = canvas.getActiveObject();
+                            canvas.remove(obj);
+                            if (obj.parentObject) {
+                                var index = obj.parentObject.widgets.indexOf(obj);
+                                if (index > -1) {
+                                    obj.parentObject.widgets.splice(index, 1);
+                                    obj.parentObject = null;
+                                }
+                            }
+                            
+                            
                             alertify.log("Object removed", "", 3000);
                         }
                     });
@@ -879,7 +902,7 @@
                     targetObject.widgets.push(slider);
                     slider.parentObject = targetObject;
 
-                    var finalWidgetLocation = computeWidgetLocation(targetObject, slider, finalHeight);
+                    var finalWidgetLocation = computeLocationOfVerticalWidget(targetObject, slider, finalHeight);
                     finalLeft = finalWidgetLocation[0];
                     finalTop = finalWidgetLocation[1];
 
@@ -907,8 +930,9 @@
                     onComplete: function() {
                     },
                     easing: fabric.util.ease['easeOutBounce']
-                });                
+                });
 
+                slider.setCoords();
                 canvas.renderAll();
             }
 
@@ -921,18 +945,13 @@
                 var duration = 500;
                 var centerPoint = new fabric.Point(x, y);
                 var angle = 0;
-                if (targetObject) {
-                    finalWidth = targetObject.width * targetObject.getScaleX() + 30;
-                    finalHeight = targetObject.height * targetObject.getScaleY() + 30;
-                    centerPoint = targetObject.getCenterPoint();
-                    angle = targetObject.angle;
-                }
+
 
                 var slider = new fabric.Rect({
                     originX: 'center',
                     originY: 'center',
-                    left: centerPoint.x,
-                    top: centerPoint.y,
+                    left: x,
+                    top: y,
                     fill: "#" + ((1 << 24) * Math.random() | 0).toString(16),
                     width: initialWidth,
                     height: initialHeight,
@@ -943,9 +962,20 @@
                     borderColor: '#CC3333',
                     cornerColor: '#FFCC00',
                     transparentCorners: false,
-                    cornerSize: 10,
-                    angle: angle
+                    cornerSize: 10
                 });
+
+                if (targetObject && targetObject.type && targetObject.type == "importedImage") {
+                    finalWidth = targetObject.width * targetObject.getScaleX() + 30;
+                    finalHeight = targetObject.height * targetObject.getScaleY() + 30;
+                    centerPoint = targetObject.getCenterPoint();
+                    angle = targetObject.angle;
+                    targetObject.widgets.push(slider);
+                    slider.parentObject = targetObject;
+                }
+
+                slider.angle = angle;
+
                 canvas.add(slider);
                 canvas.setActiveObject(slider);
                 var top = slider.top - (finalHeight - slider.height) / 2;
@@ -960,26 +990,26 @@
                     duration: duration,
                     onChange: canvas.renderAll.bind(canvas),
                     onComplete: function() {
-                        canvas.sendToBack(slider);
+
                     },
                     easing: fabric.util.ease['easeOutBounce']
                 });
-//                slider.animate('top', top, {duration: duration,
-//                    onChange: canvas.renderAll.bind(canvas),
-//                    onComplete: function() {
-//
-//                    },
-//                    easing: fabric.util.ease['easeOutBounce']
-//                });
-//                var left = slider.left - (finalWidth - slider.width) / 2;
-//                slider.animate('left', left, {
-//                    duration: duration,
-//                    onChange: canvas.renderAll.bind(canvas),
-//                    onComplete: function() {
-//                        canvas.sendToBack(slider);
-//                    },
-//                    easing: fabric.util.ease['easeOutBounce'],
-//                });
+                slider.animate('top', centerPoint.y, {duration: duration,
+                    onChange: canvas.renderAll.bind(canvas),
+                    onComplete: function() {
+
+                    },
+                    easing: fabric.util.ease['easeOutBounce']
+                });
+                var left = slider.left - (finalWidth - slider.width) / 2;
+                slider.animate('left', centerPoint.x, {
+                    duration: duration,
+                    onChange: canvas.renderAll.bind(canvas),
+                    onComplete: function() {
+                        canvas.sendToBack(slider);
+                    },
+                    easing: fabric.util.ease['easeOutBounce'],
+                });
             }
 
 
@@ -1184,11 +1214,11 @@
                 return false;
             }
 
-            function getTransverseHorizontalAxisPoints(object) {
+            function getTransverseHorizontalAxisPoints(object, objectWidth) {
 
                 var theta = 360 - object.getAngle();
-                var h = (object.width * object.scaleX / 2) * Math.sin(theta * Math.PI / 180);
-                var b = (object.width * object.scaleX / 2) * Math.cos(theta * Math.PI / 180);
+                var h = (objectWidth * object.scaleX / 2) * Math.sin(fabric.util.degreesToRadians(theta));
+                var b = (objectWidth * object.scaleX / 2) * Math.cos(fabric.util.degreesToRadians(theta));
                 var x1 = object.getCenterPoint().x + b;
                 var y1 = object.getCenterPoint().y - h;
                 var x2 = object.getCenterPoint().x - b;
@@ -1204,8 +1234,8 @@
             function getTransverseVerticalAxisPoints(object, objectHeight) {
 
                 var theta = 360 - object.getAngle() + 90;
-                var h = (objectHeight * object.scaleY / 2) * Math.sin(theta * Math.PI / 180);
-                var b = (objectHeight * object.scaleY / 2) * Math.cos(theta * Math.PI / 180);
+                var h = (objectHeight * object.scaleY / 2) * Math.sin(fabric.util.degreesToRadians(theta));
+                var b = (objectHeight * object.scaleY / 2) * Math.cos(fabric.util.degreesToRadians(theta));
                 var x1 = object.getCenterPoint().x + b;
                 var y1 = object.getCenterPoint().y - h;
                 var x2 = object.getCenterPoint().x - b;
@@ -1218,47 +1248,47 @@
 
             }
 
-            function computeWidgetLocation(object, widget, widgetHeight) {
-
-                var p1 = null;
-                var p2 = null;
-                var p3 = null;
-                var p4 = null;
-
-                var horizontalTraverseAxisPoints = getTransverseHorizontalAxisPoints(object);
-                p1 = horizontalTraverseAxisPoints[0];
-                p2 = horizontalTraverseAxisPoints[1];
+            function computeLocationOfVerticalWidget(object, widget, widgetHeight) {
+                var horizontalTraverseAxisPoints = getTransverseHorizontalAxisPoints(object, object.width);
+                var p1 = horizontalTraverseAxisPoints[0];
+                var p2 = horizontalTraverseAxisPoints[1];
 //                drawRectAt(p1, 'red');
 //                drawRectAt(p2, 'red');
 
                 var verticalTraverseAxisPoints = getTransverseVerticalAxisPoints(widget, widgetHeight);
-                p3 = verticalTraverseAxisPoints[0];
-                p4 = verticalTraverseAxisPoints[1];
+                var p3 = verticalTraverseAxisPoints[0];
+                var p4 = verticalTraverseAxisPoints[1];
 //                drawRectAt(p3, 'green');
 //                drawRectAt(p4, 'green');
 
-                var x1 = p1.x;
-                var y1 = p1.y;
-                var x2 = p2.x;
-                var y2 = p2.y;
-                var u1 = p3.x;
-                var v1 = p3.y;
-                var u2 = p4.x;
-                var v2 = p4.y;
-
-//                makeLine([x1, y1, x2, y2]);
-//                makeLine([u1, v1, u2, v2]);
+//                makeLine([p1.x, p1.y, p2.x, p2.y]);
+//                makeLine([p3.x, p3.y, p4.x, p4.y]);
 
                 // return getIntersectionPoint(x1, y1, x2, y2, u1, v1, u2, v2);
-
-                var results = checkLineIntersection(x1, y1, x2, y2, u1, v1, u2, v2);
+                var results = checkLineIntersection(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
 
 //                drawRectAt(new fabric.Point(results.x, results.y), 'blue');
 
                 return [results.x, results.y];
 
-
             }
+            
+            
+            function computeLocationOfHorizontalWidget(object, widget, widgetWidth) {
+                
+                var horizontalTraverseAxisPoints = getTransverseVerticalAxisPoints(object, object.height);
+                var p1 = horizontalTraverseAxisPoints[0];
+                var p2 = horizontalTraverseAxisPoints[1];
+                
+                var verticalTraverseAxisPoints = getTransverseHorizontalAxisPoints(widget, widgetWidth);
+                var p3 = verticalTraverseAxisPoints[0];
+                var p4 = verticalTraverseAxisPoints[1];
+                
+                var results = checkLineIntersection(p1.x, p1.y, p2.x, p2.y, p3.x, p3.y, p4.x, p4.y);
+                return [results.x, results.y];
+            }
+            
+            
 
             function getIntersectionPoint(x1, y1, x2, y2, u1, v1, u2, v2) {
                 var intersectX = -1 * ((x1 - x2) * (u1 * v2 - u2 * v1) - (u2 - u1) * (x2 * y1 - x1 * y2)) / ((v1 - v2) * (x1 - x2) - (u2 - u1) * (y2 - y1));
